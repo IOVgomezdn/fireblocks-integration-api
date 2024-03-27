@@ -15,6 +15,14 @@ export function getBtcAsset(network: Network) {
   return networkAsset[network]['btc']
 }
 
+export function isAddress(address: string) {
+  return /^(0x)?[0-9a-fA-F]{40}$/.test(address)
+}
+
+export function isSha256(payload: string) {
+  return /\b[A-Fa-f0-9]{64}\b/.test(payload)
+}
+
 export function returnError(res: Response, error: string) {
   res.status(422)
   res.json({ error })

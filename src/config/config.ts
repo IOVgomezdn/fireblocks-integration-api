@@ -5,10 +5,15 @@ import { NetworkAsset } from './types'
 const {
   API_KEY,
   API_SECRET,
-  BASE_URL
-} = process.env as { API_KEY: string, API_SECRET: string, BASE_URL: string, NETWORK: string }
+  BASE_URL,
+  SERVER_PORT
+} = process.env as { API_KEY: string, API_SECRET: string, BASE_URL: string, NETWORK: string, SERVER_PORT: string }
 
-const fireblocksClient = new FireblocksSDK(API_SECRET, API_KEY, BASE_URL)
+export function getFireblocksClient(apiSecret: string, apiKey: string, baseUrl: string) {
+  return new FireblocksSDK(apiSecret, apiKey, baseUrl)
+}
+
+const fireblocksClient = getFireblocksClient(API_SECRET, API_KEY, BASE_URL)
 
 const networkAsset: NetworkAsset = {
   testnet: {
@@ -23,5 +28,6 @@ const networkAsset: NetworkAsset = {
 
 export {
   fireblocksClient,
-  networkAsset
+  networkAsset,
+  SERVER_PORT
 }

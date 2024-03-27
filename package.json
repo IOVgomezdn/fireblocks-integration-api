@@ -1,11 +1,12 @@
 {
-  "name": "@rsksmart/flyover-lp-waas-api",
+  "name": "@rsksmart/fireblocks-integration-api",
   "version": "1.0.0",
-  "description": "",
+  "description": "A REST API to manage assets securely.",
   "main": "dist/index.js",
   "scripts": {
     "dev": "node --loader ts-node/esm src/index.ts --watch",
-    "build": "rm -rf ./dist && npx tsc"
+    "build": "rm -rf ./dist && npx tsc",
+    "unit-test": "TS_NODE_COMPILER_OPTIONS='{\"module\": \"commonjs\" }' mocha -r ts-node/register --timeout 10000 'test/unit/**/*.ts'"
   },
   "repository": {
     "type": "git",
@@ -19,8 +20,12 @@
   },
   "homepage": "https://github.com/IOVgomezdn/fireblocks-poc#readme",
   "devDependencies": {
+    "@types/chai": "^4.3.14",
     "@types/express": "^4.17.21",
+    "@types/mocha": "^10.0.6",
     "@types/node": "^20.11.16",
+    "chai": "^4.4.1",
+    "mocha": "^10.4.0",
     "ts-node": "^10.9.2",
     "typescript": "^5.3.3"
   },

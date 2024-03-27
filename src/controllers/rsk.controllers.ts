@@ -1,17 +1,22 @@
 import { Request, Response } from "express"
-import { sendRskTransaction } from "../services/transaction"
-import { signMessage } from "../services/sign"
-import { getAssetBalance } from '../services/balance'
+import { getTransactionService } from "../services/transaction"
+import { getSignService } from "../services/sign"
+import { getBalanceService } from '../services/balance'
 import { getRskAsset } from "../utils"
-import { getPubKey } from "../services/publicKey"
+import { getPublicKeyService } from "../services/publicKey"
 import { Network } from "../config/types"
+
+const publicKeyService = getPublicKeyService()
+const transactionService = getTransactionService()
+const balanceService = getBalanceService()
+const signService = getSignService()
 
 export async function signArbitraryMessage (req: Request, res: Response) {
   try {
     const { content } = req.query as { content: string }
     const { network } = req.params as { network: Network }
 
-    const { publicKey, fullSig } = await signMessage(content, getRskAsset(network))
+    const { publicKey, fullSig } = await signService.signMessage(content, getRskAsset(network))
 
     return { data: { publicKey, fullSig } }
 
@@ -25,9 +30,9 @@ export async function getBalance (req: Request, res: Response) {
   try {
     const { network } = req.params as { network: Network }
 
-    const { total: balance, blockHeight } = await getAssetBalance(getRskAsset(network))
+    const { total, blockHeight } = await balanceService.getAssetBalance(getRskAsset(network))
     
-    res.json({ data: { balance, blockHeight }})
+    res.json({ data: { balance: total, blockHeight }})
   } catch (e: any) {
     res.status(500)
     res.json({ error: e.message })
@@ -38,7 +43,7 @@ export async function getPublicKey (req: Request, res: Response) {
   try {
     const { network } = req.params as { network: Network }
 
-    const publicKey = await getPubKey(getRskAsset(network))
+    const publicKey = await publicKeyService.getPubKey(getRskAsset(network))
 
     res.json({ data: { publicKey } })
   } catch (e: any) {
@@ -53,8 +58,8 @@ export async function sendTransaction (req: Request, res: Response) {
 
     const { network } = req.params as { network: Network }
 
-    const txInfo  = await sendRskTransaction(getRskAsset(network), payload)
-    const { txHash, status, subStatus} = txInfo
+    const txInfo  = await transactionService.sendRskTransaction(getRskAsset(network), payload)
+    const { txHash, status, subStatus } = txInfo
 
     if (txHash) {
       res.json({ data: { txHash }})
